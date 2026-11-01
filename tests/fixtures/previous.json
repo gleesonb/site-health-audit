@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "version": "0.0.150",
+    "schemaVersion": "1.5",
+    "baseUrl": "https://example.com",
+    "timestamp": "2026-10-01T12:00:00.000Z",
+    "totalPages": 40,
+    "auditLevel": {"level": "surface", "settings": {"render": "off", "externalLinks": false}, "offline": true}
+  },
+  "status": "completed",
+  "score": {"overall": 65, "grade": "D", "groups": [], "categories": []},
+  "executedRules": ["links/broken-links", "core/canonical", "url/hyphens"],
+  "notChecked": [],
+  "issues": [
+    {
+      "ruleId": "links/broken-links", "name": "Broken Links", "category": "Links", "severity": "error",
+      "checks": [{"name": "broken-links", "status": "fail", "message": "5 broken", "affectedPages": [], "affectedPagesCount": 35}]
+    },
+    {
+      "ruleId": "core/canonical", "name": "Canonical", "category": "Core SEO", "severity": "warning",
+      "checks": [{"name": "canonical", "status": "warn", "message": "missing canonical", "affectedPages": [], "affectedPagesCount": 3}]
+    },
+    {
+      "ruleId": "links/broken-external-links", "name": "Broken External Links", "category": "Links", "severity": "warning",
+      "checks": [{"name": "broken-external-links", "status": "warn", "message": "2 broken external", "affectedPages": [], "affectedPagesCount": 2}]
+    }
+  ]
+}

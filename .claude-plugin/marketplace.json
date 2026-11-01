@@ -1,0 +1,11 @@
+{
+  "name": "site-health-audit",
+  "owner": {"name": "Bill Gleeson"},
+  "plugins": [
+    {
+      "name": "site-health-audit",
+      "source": "./",
+      "description": "Plain-English, prioritised website health audits built on squirrelscan (offline, free)."
+    }
+  ]
+}

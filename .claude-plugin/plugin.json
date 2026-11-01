@@ -1,0 +1,8 @@
+{
+  "name": "site-health-audit",
+  "version": "0.1.0",
+  "description": "Semrush-style technical SEO and site-health audits from Claude Code: crawls with squirrelscan offline, ranks findings into fix now / fix soon / worth a look in plain English, adds Google real-user Core Web Vitals, and diffs each run against the last.",
+  "author": {"name": "Bill Gleeson"},
+  "license": "MIT",
+  "keywords": ["seo", "site-audit", "technical-seo", "core-web-vitals", "squirrelscan", "crux"]
+}

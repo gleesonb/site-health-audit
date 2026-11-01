@@ -1,0 +1,82 @@
+{
+  "meta": {
+    "version": "0.0.157",
+    "schemaVersion": "1.5",
+    "baseUrl": "https://example.com",
+    "timestamp": "2026-11-01T12:00:00.000Z",
+    "totalPages": 40,
+    "maxPages": 100,
+    "unfetched": 12,
+    "auditLevel": {
+      "level": "surface",
+      "basedOn": "surface",
+      "settings": {"pages": 100, "render": "off", "externalLinks": false, "probe": "active"},
+      "offline": true
+    }
+  },
+  "status": "completed",
+  "score": {
+    "overall": 72,
+    "grade": "C",
+    "groups": [{"group": "seo", "name": "SEO", "score": 80}],
+    "categories": [{"name": "Links", "score": 60}, {"name": "Core SEO", "score": 85}]
+  },
+  "executedRules": [
+    "links/broken-links", "core/meta-title", "images/image-file-size", "core/title-unique",
+    "content/duplicate-title", "a11y/form-labels", "url/hyphens", "core/canonical", "ax/llms-txt"
+  ],
+  "notChecked": [
+    {"ruleId": "links/broken-external-links", "name": "Broken External Links", "message": "Not checked: Broken External Links. External link checking was off."}
+  ],
+  "issues": [
+    {
+      "ruleId": "links/broken-links", "name": "Broken Links", "category": "Links", "severity": "error",
+      "description": "Detects links returning 404 or 5xx errors", "solution": "Fix or remove broken links.",
+      "checks": [{"name": "broken-links", "status": "fail", "message": "2 broken internal link(s) (4xx/5xx)",
+        "affectedPages": ["https://example.com/", "https://example.com/about/"], "affectedPagesCount": 30, "affectedPagesHasMore": true,
+        "items": [{"id": "https://example.com/old/", "label": "https://example.com/old/ (404)"}]}]
+    },
+    {
+      "ruleId": "core/meta-title", "name": "Meta Title", "category": "Core SEO", "severity": "warning",
+      "description": "Checks the title tag", "solution": "Write a unique title.",
+      "checks": [
+        {"name": "meta-title", "status": "warn", "message": "Title too short", "affectedPages": ["https://example.com/a/"], "affectedPagesCount": 4},
+        {"name": "meta-title", "status": "pass", "message": "ok"}
+      ]
+    },
+    {
+      "ruleId": "images/image-file-size", "name": "Image File Size Too Large", "category": "Images", "severity": "error",
+      "description": "Large images", "solution": "Compress images.",
+      "checks": [
+        {"name": "image-file-size", "status": "fail", "message": "1 image(s) exceed 1.0 MB", "affectedPages": ["https://example.com/b/"], "affectedPagesCount": 1,
+          "items": [{"id": "https://example.com/big.png"}]},
+        {"name": "image-file-size-warn", "status": "warn", "message": "5 image(s) exceed 200.0 KB", "affectedPages": ["https://example.com/c/"], "affectedPagesCount": 5}
+      ]
+    },
+    {
+      "ruleId": "content/duplicate-title", "name": "Duplicate Title", "category": "Content", "severity": "warning",
+      "description": "Duplicate titles", "solution": "Make titles unique.",
+      "checks": [{"name": "duplicate-title", "status": "warn", "message": "1 duplicate title(s)", "affectedPages": ["https://example.com/x/", "https://example.com/y/"], "affectedPagesCount": 2}]
+    },
+    {
+      "ruleId": "core/title-unique", "name": "Title Uniqueness", "category": "Core SEO", "severity": "warning",
+      "description": "Unique titles", "solution": "Make titles unique.",
+      "checks": [{"name": "title-unique", "status": "warn", "message": "1 duplicate title(s)", "affectedPages": ["https://example.com/x/"], "affectedPagesCount": 2}]
+    },
+    {
+      "ruleId": "a11y/form-labels", "name": "Form Labels", "category": "Accessibility", "severity": "error",
+      "description": "Inputs need labels", "solution": "Add labels.",
+      "checks": [{"name": "form-labels", "status": "fail", "message": "1 input without a label", "affectedPages": ["https://example.com/contact/"], "affectedPagesCount": 1}]
+    },
+    {
+      "ruleId": "url/hyphens", "name": "URL Hyphens", "category": "URL Structure", "severity": "warning",
+      "description": "Use hyphens", "solution": "Use hyphens in URLs.",
+      "checks": [{"name": "hyphens", "status": "warn", "message": "underscores in URL", "affectedPages": ["https://example.com/a_b/"], "affectedPagesCount": 1}]
+    },
+    {
+      "ruleId": "ax/llms-txt", "name": "llms.txt", "category": "Agent Experience", "severity": "info",
+      "description": "llms.txt present", "solution": "Optional.",
+      "checks": [{"name": "llms-txt", "status": "warn", "message": "No llms.txt"}]
+    }
+  ]
+}
