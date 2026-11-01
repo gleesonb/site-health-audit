@@ -70,7 +70,6 @@
     "links/broken-links": 1,
     "links/invalid-links": 1,
     "links/redirect-chains": 1,
-    "links/https-downgrade": 1,
     "security/https": 1,
     "security/http-to-https": 1,
     "security/mixed-content": 1,
@@ -131,6 +130,7 @@
     "links/nofollow-internal": 3,
     "links/anchor-text": 3,
     "links/tel-mailto": 3,
+    "links/https-downgrade": 3,
     "mobile/web-app-manifest": 3,
     "legal/subprocessor-disclosure": 3
   }

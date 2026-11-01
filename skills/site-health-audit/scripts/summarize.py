@@ -58,58 +58,70 @@ def check_tier(rule_id: str, check: dict, base: int, priorities: dict) -> int:
     return base
 
 
-def tier_for(issue: dict, priorities: dict) -> int:
-    """Most urgent tier across the issue's failing checks; errors are at least tier 2."""
+def tier_and_checks(issue: dict, priorities: dict) -> tuple[int, list[dict]]:
+    """The finding's tier and the failing checks that set it.
+
+    Each failing check gets its own tier (rule tier, message overrides, and
+    squirrelscan "error" fails raised to at least tier 2). The finding takes the
+    most urgent, and its page count, summary and examples come only from the
+    checks at that tier, so a demoted "over 200 KB" warning cannot inflate the
+    page count of an "over 1 MB" error.
+    """
     rule_id = issue.get("ruleId", "unknown/unknown")
     base = rule_tier(rule_id, priorities)
-    checks = failing_checks(issue)
-    tier = min((check_tier(rule_id, c, base, priorities) for c in checks), default=base)
-    if any(c.get("status") == "fail" for c in checks) and issue.get("severity") == "error":
-        tier = min(tier, 2)
-    return tier
+    is_error = issue.get("severity") == "error"
+    scored = []
+    for c in failing_checks(issue):
+        t = check_tier(rule_id, c, base, priorities)
+        if is_error and c.get("status") == "fail":
+            t = min(t, 2)
+        scored.append((t, c))
+    if not scored:
+        return base, []
+    tier = min(t for t, _ in scored)
+    return tier, [c for t, c in scored if t == tier]
 
 
 def failing_checks(issue: dict) -> list[dict]:
     return [c for c in issue.get("checks", []) if c.get("status") in ("fail", "warn")]
 
 
-def pages_affected(issue: dict) -> tuple[int, bool]:
-    """Largest affected-page count across the issue's failing checks."""
+def pages_affected(checks: list[dict]) -> tuple[int, bool]:
+    """Largest affected-page count across the given checks."""
     best, more = 0, False
-    for check in failing_checks(issue):
+    for check in checks:
         count = int(check.get("affectedPagesCount") or len(check.get("affectedPages", [])))
-        if count > best:
-            best = count
+        best = max(best, count)
         more = more or bool(check.get("affectedPagesHasMore"))
     return best, more
 
 
-def example_pages(issue: dict, limit: int) -> list[str]:
+def example_pages(checks: list[dict], limit: int) -> list[str]:
     seen: list[str] = []
-    for check in failing_checks(issue):
+    for check in checks:
         for url in check.get("affectedPages", []):
-            if url not in seen:
-                seen.append(url)
             if len(seen) >= limit:
                 return seen
+            if url not in seen:
+                seen.append(url)
     return seen
 
 
-def example_items(issue: dict, limit: int) -> list[str]:
+def example_items(checks: list[dict], limit: int) -> list[str]:
     """The things at fault (a broken URL, an oversized image), as opposed to the pages they sit on."""
     seen: list[str] = []
-    for check in failing_checks(issue):
+    for check in checks:
         for item in check.get("items", []) or []:
+            if len(seen) >= limit:
+                return seen
             label = str(item.get("label") or item.get("id") or "") if isinstance(item, dict) else str(item)
             if label and label not in seen:
                 seen.append(label)
-            if len(seen) >= limit:
-                return seen
     return seen
 
 
-def first_message(issue: dict) -> str:
-    for check in failing_checks(issue):
+def first_message(checks: list[dict]) -> str:
+    for check in checks:
         if check.get("message"):
             return str(check["message"])
     return ""
@@ -122,21 +134,22 @@ def build_findings(report: dict, priorities: dict, examples: int) -> list[dict]:
         if severity == "info":
             continue
         rule_id = issue.get("ruleId", "unknown/unknown")
-        pages, more = pages_affected(issue)
+        tier, checks = tier_and_checks(issue, priorities)
+        pages, more = pages_affected(checks)
         findings.append(
             {
                 "ruleId": rule_id,
                 "name": issue.get("name", rule_id),
                 "category": issue.get("category", ""),
                 "severity": severity,
-                "tier": tier_for(issue, priorities),
+                "tier": tier,
                 "pagesAffected": pages,
                 "pagesAffectedHasMore": more,
-                "summary": first_message(issue),
+                "summary": first_message(checks),
                 "whatItMeans": issue.get("description", ""),
                 "howToFix": issue.get("solution", ""),
-                "exampleItems": example_items(issue, examples),
-                "examplePages": example_pages(issue, examples),
+                "exampleItems": example_items(checks, examples),
+                "examplePages": example_pages(checks, examples),
                 "docs": RULE_DOCS.format(rule=rule_id),
             }
         )

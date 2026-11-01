@@ -50,6 +50,13 @@ class SummarizeTests(unittest.TestCase):
         # 1 MB image is a fail at severity error -> tier 2, even though the 200 KB warn is tier 3
         self.assertEqual(self.by_rule["images/image-file-size"]["tier"], 2)
 
+    def test_counts_come_from_the_checks_that_set_the_tier(self):
+        # fail "over 1 MB" on 1 page sets tier 2; the demoted "over 200 KB" warn on 5 pages must not leak in
+        f = self.by_rule["images/image-file-size"]
+        self.assertEqual(f["pagesAffected"], 1)
+        self.assertEqual(f["summary"], "1 image(s) exceed 1.0 MB")
+        self.assertEqual(f["examplePages"], ["https://example.com/b/"])
+
     def test_errors_raised_to_at_least_tier_2(self):
         self.assertEqual(self.by_rule["a11y/form-labels"]["tier"], 2)
 

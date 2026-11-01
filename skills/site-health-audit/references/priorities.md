@@ -23,7 +23,7 @@ Anything that stops search engines finding or listing pages, breaks something vi
 | Redirect detours | `crawl/redirect-chain`, `links/redirect-chains` | Each hop slows the visitor and leaks some ranking value. |
 | Sitemap | `crawl/sitemap-*` (exists, valid, 4xx, domain) | The sitemap is the list of pages you ask Google to index; dead entries erode trust in it. |
 | Titles | `core/meta-title` (missing), `core/title-unique`, `content/duplicate-title` | The title is the blue link in search results. Missing or duplicated titles make pages compete with each other. |
-| HTTPS | `security/https`, `security/http-to-https`, `security/mixed-content`, `security/tls-certificate`, `security/form-https`, `links/https-downgrade` | Browsers warn visitors about insecure pages and forms. |
+| HTTPS | `security/https`, `security/http-to-https`, `security/mixed-content`, `security/tls-certificate`, `security/form-https` | Browsers warn visitors about insecure pages and forms. |
 | Looks unfinished | `content/placeholder-*`, `content/dev-leakage`, `content/unrendered-markup`, `content/mojibake` | Template text, staging links or `&amp;` on the page read as a neglected site. |
 | Leaked secrets | `security/leaked-secrets` | An API key in page source is a security incident, not an SEO issue. |
 
@@ -33,7 +33,7 @@ Costs clicks, speed, shares or accessibility, but nothing is broken: page speed 
 
 ## Tier 3: worth a look
 
-Everything else by default: length nags for titles and descriptions, most accessibility polish, URL style, E-E-A-T signals, security headers such as CSP and security.txt, minification, and AI-agent readiness (`ax/*`, including llms.txt). Google states that Search does not use llms.txt, and whether to let AI crawlers in is a business decision, so the skill reports it without judging it.
+Everything else by default: length nags for titles and descriptions, most accessibility polish, URL style, E-E-A-T signals, security headers such as CSP and security.txt, plain `http://` links to other sites (`links/https-downgrade`: the linking page stays secure; links to your own subdomains over http are caught by `content/dev-leakage`), minification, and AI-agent readiness (`ax/*`, including llms.txt). Google states that Search does not use llms.txt, and whether to let AI crawlers in is a business decision, so the skill reports it without judging it.
 
 ## Things the tiers cannot know
 
