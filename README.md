@@ -25,7 +25,7 @@ squirrelscan's `audit-website` skill is a developer fix loop: audit, edit the co
    You do not need to sign in.
 2. Add the skill to Claude Code:
    ```
-   /plugin marketplace add <github-owner>/site-health-audit
+   /plugin marketplace add gleesonb/site-health-audit
    /plugin install site-health-audit@site-health-audit
    ```
    Or copy `skills/site-health-audit/` into `~/.claude/skills/`.
